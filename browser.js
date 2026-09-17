@@ -8,7 +8,7 @@ const reloadButton = document.getElementById('reload-btn');
 const engineStatus = document.getElementById('engine-status');
 
 // Fallback configuration
-const HOME_PAGE_URL = "https://google.com";
+const HOME_PAGE_URL = "https://wikipedia.com";
 
 /**
  * Validates whether the typed string is an active website URL format
