@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Sandbox - Chrome Concept Clone</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #202124;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Window Tab System Bar */
+        .tab-bar {
+            background-color: #202124;
+            display: flex;
+            padding: 8px 10px 0 10px;
+            gap: 5px;
+        }
+
+        .tab {
+            background-color: #35363a;
+            color: #9aa0a6;
+            padding: 8px 22px;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab.active {
+            background-color: #35363a;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Chrome Navigation Action Control Header */
+        .browser-toolbar {
+            background-color: #35363a;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #3c4043;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #e8eaed;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        .nav-btn:hover { background-color: rgba(255,255,255,0.1); }
+
+        /* Unified Smart Search / URL Input Box */
+        .address-bar {
+            flex-grow: 1;
+            background-color: #202124;
+            border: 1px solid #3c4043;
+            border-radius: 20px;
+            padding: 8px 20px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .address-bar:focus { 
+            border-color: #8ab4f8; 
+            background-color: #282a2d;
+        }
+
+        /* Interactive Viewport Frame Area */
+        .web-view-container {
+            flex-grow: 1;
+            background: white;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        .info-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.85);
+            color: #8ab4f8;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            font-family: monospace;
+            border: 1px solid #3c4043;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tab Section Header Component -->
+    <div class="tab-bar">
+        <button class="tab active" id="tab-title">Wikipedia</button>
+    </div>
+
+    <!-- Active Address Bar Navigation Block -->
+    <div class="browser-toolbar">
+        <button class="nav-btn" id="home-btn" title="Home">🏠</button>
+        <button class="nav-btn" id="reload-btn" title="Reload">🔄</button>
+        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL website link or ask Google a question...">
+        <button class="nav-btn" id="go-btn" title="Navigate">➜</button>
+    </div>
+
+    <!-- Sandbox Framing Viewport Content Area -->
+    <div class="web-view-container">
+        <iframe id="browser-frame" src="https://wikipedia.org"></iframe>
+        <div class="info-badge">Engine: Sandbox_v1.0</div>
+    </div>
+
+    <!-- Linking your custom decoupled engineering script sheet -->
+    <script src="browser.js"></script>
+</body>
+</html>
