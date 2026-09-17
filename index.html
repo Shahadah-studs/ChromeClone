@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Web Sandbox Engine</title>
+    <title>Wikipedia Sandbox Browser</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -33,6 +33,10 @@
             font-size: 0.8rem;
             cursor: pointer;
             border: none;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tab.active {
@@ -82,6 +86,22 @@
         .web-view-container {
             flex-grow: 1;
             background: #ffffff;
+            position: relative;
+        }
+
+        iframe, .search-output-view {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .search-output-view {
+            display: block; /* Search view is default home active view */
             overflow-y: auto;
             padding: 30px;
         }
@@ -93,7 +113,6 @@
             color: #333;
         }
 
-        /* Search Cards Layout Engine Output styling */
         .search-card {
             background: #ffffff;
             border: 1px solid #dadce0;
@@ -104,11 +123,17 @@
             max-width: 800px;
         }
         .search-card h3 { margin: 0 0 8px 0; }
-        .search-card h3 a {
+        .search-card h3 button {
+            background: none;
+            border: none;
             color: #1a0dab;
-            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            text-align: left;
         }
-        .search-card h3 a:hover { text-decoration: underline; }
+        .search-card h3 button:hover { text-decoration: underline; }
         .search-card p {
             color: #4d5156;
             line-height: 1.5;
@@ -132,28 +157,36 @@
 <body>
 
     <div class="tab-bar">
-        <button class="tab active" id="tab-title">Sandbox Search Engine</button>
+        <button class="tab active" id="tab-title">Wikipedia Portal</button>
     </div>
 
     <div class="browser-toolbar">
         <button class="nav-btn" id="home-btn">🏠</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Search anything (e.g. Chrome, Quran, Space, Cars)...">
+        <input type="text" id="url-input" class="address-bar" placeholder="Search Wikipedia (e.g. Chrome, Quran, Space, Gaming)...">
         <button class="nav-btn" id="go-btn">➜</button>
     </div>
 
-    <div class="web-view-container" id="view-port">
-        <div id="render-output">
-            <div class="welcome-screen">
-                <h2>Custom HTML Sandbox Browser</h2>
-                <p>Type any keyword or topic in the address bar above to safely scrape and fetch database files directly into your view container.</p>
+    <div class="web-view-container">
+        <!-- Layer A: Search Engine Layout Panel -->
+        <div id="search-view" class="search-output-view">
+            <div id="render-output">
+                <div class="welcome-screen">
+                    <h2>Custom Wikipedia Sandbox Browser</h2>
+                    <p>Type any keyword or topic in the address bar above. Results and entire articles will load right here inside this app screen without errors.</p>
+                </div>
             </div>
         </div>
-        <div class="status-badge" id="engine-status">Status: Online</div>
+
+        <!-- Layer B: Safe Embedded Frame Engine for reading articles -->
+        <iframe id="browser-frame"></iframe>
+
+        <div class="status-badge" id="engine-status">Status: Ready</div>
     </div>
 
     <script src="browser.js"></script>
 </body>
 </html>
+
 
 
 
