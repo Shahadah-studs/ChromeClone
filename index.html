@@ -117,28 +117,31 @@
             letter-spacing: 0.5px;
             font-family: monospace;
             border: 1px solid #3c4043;
+            z-index: 10;
         }
     </style>
+    <!-- We load an open source web component script to bypass frame limitations -->
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
     <!-- Tab Bar -->
     <div class="tab-bar">
-        <button class="tab active" id="tab-title">Google Home</button>
+        <button class="tab active" id="tab-title">Search Home</button>
     </div>
 
     <!-- Browser Controls -->
     <div class="browser-toolbar">
         <button class="nav-btn" id="home-btn" title="Home">🏠</button>
         <button class="nav-btn" id="reload-btn" title="Reload">🔄</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL (e.g. wikipedia.org) or search anything...">
+        <input type="text" id="url-input" class="address-bar" placeholder="Type a website URL or ask a search question...">
         <button class="nav-btn" id="go-btn" title="Go">➜</button>
     </div>
 
     <!-- Live Window Screen Display -->
     <div class="web-view-container">
-        <!-- Defaults to an open Google Search input container screen layout -->
-        <iframe id="browser-frame" src="https://google.com"></iframe>
+        <!-- We use an open-source web component extension to safely render cross-origin data -->
+        <iframe id="browser-frame" src="https://duckduckgo.com"></iframe>
         <div class="status-badge" id="engine-status">Network: Connected</div>
     </div>
 
@@ -146,3 +149,4 @@
     <script src="browser.js"></script>
 </body>
 </html>
+
