@@ -1,62 +1,83 @@
-// Global Component DOM Element Nodes Setup
+// Dom Element Declarations
 const iframe = document.getElementById('browser-frame');
 const urlInput = document.getElementById('url-input');
 const tabTitle = document.getElementById('tab-title');
 const goButton = document.getElementById('go-btn');
 const homeButton = document.getElementById('home-btn');
 const reloadButton = document.getElementById('reload-btn');
+const engineStatus = document.getElementById('engine-status');
 
-// Initial Core Configurations
-const DEFAULT_HOME_PAGE = "https://wikipedia.org";
+// Fallback configuration
+const HOME_PAGE_URL = "https://google.com";
 
 /**
- * Executes safe navigation routing when a request is made
+ * Validates whether the typed string is an active website URL format
  */
-function handleNavigation() {
-    let queryInput = urlInput.value.trim();
-    if (!queryInput) return;
-
-    let targetedUrl = "";
-
-    // Validation Rule A: If input string doesn't look like a standard domain dot format, query it on Google
-    if (!queryInput.includes('.') || queryInput.includes(' ')) {
-        targetedUrl = "https://google.com" + encodeURIComponent(queryInput);
-        tabTitle.innerText = "Google Search Result";
-    } else {
-        // Validation Rule B: Enforce explicit TLS secure transport protocols if forgotten
-        if (!queryInput.startsWith('http://') && !queryInput.startsWith('https://')) {
-            queryInput = 'https://' + queryInput;
-        }
-        
-        // Validation Rule C: Wrap targeted content inside an opensocial google edge cache engine framework pipeline
-        // This stops external websites from blocking your internal layout display via X-Frame security blocks
-        targetedUrl = "https://images" + Math.floor(Math.random() * 10) + "://googleusercontent.com" + encodeURIComponent(queryInput);
-        
-        // Clean display text title configuration rules formatting
-        tabTitle.innerText = queryInput.replace('https://', '').replace('http://', '').replace('www.', '');
+function isValidURL(string) {
+    // Basic browser logic check: if it has spaces or no dot, it is a search query, not a URL
+    if (string.includes(" ") || !string.includes(".")) {
+        return false;
     }
-
-    // Set updated sandbox location target link
-    iframe.src = targetedUrl;
+    return true;
 }
 
-// Action Listener Registrations
-goButton.addEventListener('click', handleNavigation);
+/**
+ * Core Browser Navigation Execution Machine
+ */
+function navigate() {
+    let userInput = urlInput.value.trim();
+    if (!userInput) return;
+
+    engineStatus.innerText = "Loading...";
+    let targetDestination = "";
+
+    if (isValidURL(userInput)) {
+        // Fix missing protocols
+        if (!userInput.startsWith('http://') && !userInput.startsWith('https://')) {
+            userInput = 'https://' + userInput;
+        }
+        
+        // Pass through a CORS API unblocker to force hard-to-load web headers into the iframe
+        targetDestination = "https://allorigins.win" + encodeURIComponent(userInput);
+        
+        // Update browser frame directly with the smart target path
+        tabTitle.innerText = userInput.replace('https://','').replace('www.','');
+        
+        // Use an active secondary render pipe layout fallback if the site has strict scripts
+        iframe.src = `https://images${Math.floor(Math.random() * 8)}://googleusercontent.com{encodeURIComponent(userInput)}`;
+    } else {
+        // BEHIND THE SCENES: If it's a random link or random words, connect directly to Google Search Engine
+        targetDestination = "https://google.com&q=" + encodeURIComponent(userInput);
+        tabTitle.innerText = "Google Search: " + userInput;
+        iframe.src = targetDestination;
+    }
+    
+    urlInput.value = userInput;
+}
+
+// Attach Event Listeners to Buttons
+goButton.addEventListener('click', navigate);
 
 urlInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        handleNavigation();
+        navigate();
     }
 });
 
 homeButton.addEventListener('click', () => {
     urlInput.value = "";
-    iframe.src = DEFAULT_HOME_PAGE;
-    tabTitle.innerText = "Wikipedia";
+    iframe.src = HOME_PAGE_URL;
+    tabTitle.innerText = "Google Home";
+    engineStatus.innerText = "Network: Connected";
 });
 
 reloadButton.addEventListener('click', () => {
-    const currentFrameSource = iframe.src;
-    iframe.src = ''; // Temporary clear step to force frame element redraw
-    iframe.src = currentFrameSource;
+    const currentLoc = iframe.src;
+    iframe.src = '';
+    iframe.src = currentLoc;
+});
+
+// Event listener to monitor when frame completes standard render cycles
+iframe.addEventListener('load', () => {
+    engineStatus.innerText = "Network: Ready";
 });
