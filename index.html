@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real HTML Web Browser Engine</title>
+    <title>Real Sandbox Browser Engine</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -69,7 +69,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
         }
         .nav-btn:hover { background-color: rgba(255,255,255,0.1); }
 
@@ -83,29 +82,30 @@
             color: white;
             font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s, background-color 0.2s;
         }
         .address-bar:focus { 
             border-color: #8ab4f8; 
-            background-color: #282a2d;
         }
 
-        /* Interactive Viewport Frame Area */
+        /* Live Viewport Render Display Window */
         .web-view-container {
             flex-grow: 1;
             background: white;
             position: relative;
+            overflow-y: auto;
+            padding: 20px;
         }
 
-        iframe {
+        /* Styling inside the custom web rendering window view */
+        .render-output {
             width: 100%;
             height: 100%;
-            border: none;
-            background-color: white;
+            color: #000;
+            background: #fff;
         }
 
         .status-badge {
-            position: absolute;
+            position: fixed;
             bottom: 12px;
             right: 12px;
             background: rgba(0,0,0,0.85);
@@ -114,39 +114,49 @@
             border-radius: 6px;
             font-size: 0.75rem;
             pointer-events: none;
-            letter-spacing: 0.5px;
             font-family: monospace;
             border: 1px solid #3c4043;
-            z-index: 10;
+            z-index: 999;
         }
+        
+        /* Search list element layout output results formatting styling */
+        .search-item {
+            margin-bottom: 20px;
+        }
+        .search-item a {
+            color: #1a0dab;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .search-item a:hover { text-decoration: underline; }
+        .search-item p { color: #4d5156; margin: 4px 0 0 0; }
     </style>
-    <!-- We load an open source web component script to bypass frame limitations -->
-    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
     <!-- Tab Bar -->
     <div class="tab-bar">
-        <button class="tab active" id="tab-title">Search Home</button>
+        <button class="tab active" id="tab-title">Browser Home</button>
     </div>
 
     <!-- Browser Controls -->
     <div class="browser-toolbar">
         <button class="nav-btn" id="home-btn" title="Home">🏠</button>
-        <button class="nav-btn" id="reload-btn" title="Reload">🔄</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Type a website URL or ask a search question...">
+        <input type="text" id="url-input" class="address-bar" placeholder="Type a website URL (example: wikipedia.org) or search anything...">
         <button class="nav-btn" id="go-btn" title="Go">➜</button>
     </div>
 
-    <!-- Live Window Screen Display -->
-    <div class="web-view-container">
-        <!-- We use an open-source web component extension to safely render cross-origin data -->
-        <iframe id="browser-frame" src="https://duckduckgo.com"></iframe>
-        <div class="status-badge" id="engine-status">Network: Connected</div>
+    <!-- Live Window Screen Display Box (No more empty blank frames) -->
+    <div class="web-view-container" id="view-port">
+        <div id="render-output" class="render-output">
+            <h2>Welcome to HTML Sandbox Browser</h2>
+            <p>Type a topic or search string into the address bar above to browse information live without any frame blocks.</p>
+        </div>
+        <div class="status-badge" id="engine-status">Engine Status: Idle</div>
     </div>
 
-    <!-- Linking your active JavaScript script logic -->
     <script src="browser.js"></script>
 </body>
 </html>
+
 
