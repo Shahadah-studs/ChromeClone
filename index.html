@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Sandbox - Chrome Concept Clone</title>
+    <title>Real HTML Web Browser Engine</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -104,7 +104,7 @@
             background-color: white;
         }
 
-        .info-badge {
+        .status-badge {
             position: absolute;
             bottom: 12px;
             right: 12px;
@@ -122,26 +122,27 @@
 </head>
 <body>
 
-    <!-- Tab Section Header Component -->
+    <!-- Tab Bar -->
     <div class="tab-bar">
-        <button class="tab active" id="tab-title">Wikipedia</button>
+        <button class="tab active" id="tab-title">Google Home</button>
     </div>
 
-    <!-- Active Address Bar Navigation Block -->
+    <!-- Browser Controls -->
     <div class="browser-toolbar">
         <button class="nav-btn" id="home-btn" title="Home">🏠</button>
         <button class="nav-btn" id="reload-btn" title="Reload">🔄</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL website link or ask Google a question...">
-        <button class="nav-btn" id="go-btn" title="Navigate">➜</button>
+        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL (e.g. wikipedia.org) or search anything...">
+        <button class="nav-btn" id="go-btn" title="Go">➜</button>
     </div>
 
-    <!-- Sandbox Framing Viewport Content Area -->
+    <!-- Live Window Screen Display -->
     <div class="web-view-container">
-        <iframe id="browser-frame" src="https://wikipedia.org"></iframe>
-        <div class="info-badge">Engine: Sandbox_v1.0</div>
+        <!-- Defaults to an open Google Search input container screen layout -->
+        <iframe id="browser-frame" src="https://google.com"></iframe>
+        <div class="status-badge" id="engine-status">Network: Connected</div>
     </div>
 
-    <!-- Linking your custom decoupled engineering script sheet -->
+    <!-- Linking your active JavaScript script logic -->
     <script src="browser.js"></script>
 </body>
 </html>
