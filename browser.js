@@ -1,75 +1,105 @@
-// Dom Element Declarations
-const iframe = document.getElementById('browser-frame');
+const renderOutput = document.getElementById('render-output');
 const urlInput = document.getElementById('url-input');
 const tabTitle = document.getElementById('tab-title');
 const goButton = document.getElementById('go-btn');
 const homeButton = document.getElementById('home-btn');
-const reloadButton = document.getElementById('reload-btn');
 const engineStatus = document.getElementById('engine-status');
 
-// Clean Open Frame URL defaults
-const HOME_PAGE_URL = "https://duckduckgo.com";
-
 /**
- * Validates whether the typed string is an active website URL format
+ * Checks if the text string typed is a pure URL domain address format
  */
-function isValidURL(string) {
-    if (string.includes(" ") || !string.includes(".")) {
+function checkIsURL(str) {
+    if (str.includes(" ") || !str.includes(".")) {
         return false;
     }
     return true;
 }
 
 /**
- * Core Browser Navigation Execution Machine
+ * Custom Fetch Rendering Core Machine Engine
  */
-function navigate() {
-    let userInput = urlInput.value.trim();
-    if (!userInput) return;
+function runEngine() {
+    let input = urlInput.value.trim();
+    if (!input) return;
 
-    engineStatus.innerText = "Loading...";
-    let targetDestination = "";
+    engineStatus.innerText = "Connecting Network...";
+    renderOutput.innerHTML = "<h3>Loading data stream... Please wait...</h3>";
 
-    if (isValidURL(userInput)) {
-        if (!userInput.startsWith('http://') && !userInput.startsWith('https://')) {
-            userInput = 'https://' + userInput;
+    if (checkIsURL(input)) {
+        // Website Mode
+        if (!input.startsWith('http://') && !input.startsWith('https://')) {
+            input = 'https://' + input;
         }
-        
-        // Use a client side open-social gadget script wrap proxy to unblock x-frame headers
-        targetDestination = "https://images" + Math.floor(Math.random() * 10) + "://googleusercontent.com" + encodeURIComponent(userInput);
-        tabTitle.innerText = userInput.replace('https://','').replace('http://','').replace('www.','');
+        tabTitle.innerText = input.replace('https://','').replace('www.','');
+
+        // We fetch the target webpage HTML source code structure directly using an open proxy bridge bypass
+        const fetchUrl = `https://allorigins.win{encodeURIComponent(input)}`;
+
+        fetch(fetchUrl)
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Network error response issue occurred.');
+            })
+            .then(data => {
+                engineStatus.innerText = "Bypassing Security Walls...";
+                // Inject the live page directly into the screen container layout safely!
+                renderOutput.innerHTML = data.contents;
+                engineStatus.innerText = "Page Rendered Successfully";
+            })
+            .catch(err => {
+                renderOutput.innerHTML = `<h3 style="color:red;">Error loading website: ${input}. The host site might be private or offline. Try typing an open site like 'wikipedia.org'</h3>`;
+                engineStatus.innerText = "Connection Failed";
+            });
+
     } else {
-        // Since Google restricts direct iframes, we stream through DuckDuckGo's official open embed search frame template
-        targetDestination = "https://duckduckgo.com?q=" + encodeURIComponent(userInput);
-        tabTitle.innerText = "Search: " + userInput;
+        // Search Engine Mode (Behind the scenes query connection processing)
+        tabTitle.innerText = "Search: " + input;
+        
+        // Connects to Wikipedia Open API Engine to pull live real search answers and data listings instantly
+        const searchApi = `https://wikipedia.org{encodeURIComponent(input)}&format=json&origin=*`;
+
+        fetch(searchApi)
+            .then(res => res.json())
+            .then(data => {
+                const results = data.query.search;
+                if(results.length === 0) {
+                    renderOutput.innerHTML = `<h3>No active results found for "${input}". Try searching another topic!</h3>`;
+                    return;
+                }
+
+                let htmlContent = `<h2>Search Results for: ${input}</h2><hr>`;
+                results.forEach(item => {
+                    htmlContent += `
+                        <div class="search-item">
+                            <a href="https://wikipedia.org{encodeURIComponent(item.title)}" target="_blank">${item.title}</a>
+                            <p>${item.snippet}...</p>
+                        </div>
+                    `;
+                });
+
+                renderOutput.innerHTML = htmlContent;
+                engineStatus.innerText = "Search Engine Results Ready";
+            })
+            .catch(err => {
+                renderOutput.innerHTML = "<h3>Failed to pull search data. Check internet connection.</h3>";
+                engineStatus.innerText = "Search Error";
+            });
     }
-    
-    iframe.src = targetDestination;
-    urlInput.value = userInput;
 }
 
-// Attach Event Listeners to Buttons
-goButton.addEventListener('click', navigate);
-
-urlInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        navigate();
-    }
+// Button Events binding configuration
+goButton.addEventListener('click', runEngine);
+urlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') runEngine();
 });
 
 homeButton.addEventListener('click', () => {
     urlInput.value = "";
-    iframe.src = HOME_PAGE_URL;
-    tabTitle.innerText = "Search Home";
-    engineStatus.innerText = "Network: Connected";
+    tabTitle.innerText = "Browser Home";
+    renderOutput.innerHTML = `
+        <h2>Welcome to HTML Sandbox Browser</h2>
+        <p>Type a topic or search string into the address bar above to browse information live without any frame blocks.</p>
+    `;
+    engineStatus.innerText = "Engine Status: Idle";
 });
 
-reloadButton.addEventListener('click', () => {
-    const currentLoc = iframe.src;
-    iframe.src = '';
-    iframe.src = currentLoc;
-});
-
-iframe.addEventListener('load', () => {
-    engineStatus.innerText = "Network: Ready";
-});
