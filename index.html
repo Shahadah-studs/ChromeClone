@@ -3,69 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChromeCloneX - Web Browser Simulator</title>
+    <title>ShahadahOS - Beta</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #202124; color: #fff; overflow: hidden; }
-        .browser-container { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body, html { width: 100vw; height: 100vh; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; overflow: hidden; background: #020617; }
         
-       
-        .toolbar { display: flex; align-items: center; background: #2f3033; padding: 8px; gap: 10px; border-bottom: 1px solid #3c4043; }
-        .nav-buttons { display: flex; gap: 5px; }
-        .btn { background: transparent; border: none; color: #fff; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
-        .btn:hover { background: rgba(255,255,255,0.1); }
-        .btn:disabled { color: #5f6368; cursor: not-allowed; }
-       
-        .address-bar-wrapper { flex-grow: 1; display: flex; align-items: center; background: #202124; border-radius: 20px; padding: 5px 15px; border: 1px solid #5f6368; }
-        .address-bar-wrapper:focus-within { border-color: #8ab4f8; box-shadow: 0 0 0 1px #8ab4f8; }
-        .address-input { width: 100%; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; }
-        
-        
-        .proxy-toggle { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #bdc1c6; white-space: nowrap; user-select: none; }
-        .proxy-toggle input { cursor: pointer; }
+        .desktop { 
+            width: 100%; 
+            height: calc(100% - 52px); 
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            position: relative;
+            padding: 15px;
+        }
 
-        .viewport-container { flex-grow: 1; position: relative; background: #fff; }
-        iframe { width: 100%; height: 100%; border: none; background: #fff; }
-        
-       
-        .status-bar { position: absolute; bottom: 0; left: 0; right: 0; background: #f1f3f4; color: #3c4043; padding: 6px 15px; font-size: 12px; display: flex; justify-content: space-between; border-top: 1px solid #dadce0; z-index: 10; pointer-events: none; }
-        .status-bar * { pointer-events: auto; }
+        .desktop::before {
+            content: ''; position: absolute; top: 20%; left: 25%; width: 300px; height: 300px;
+            background: #0284c7; filter: blur(150px); opacity: 0.2; pointer-events: none;
+        }
+        .desktop::after {
+            content: ''; position: absolute; bottom: 20%; right: 25%; width: 300px; height: 300px;
+            background: #00f0ff; filter: blur(150px); opacity: 0.15; pointer-events: none;
+        }
+
+        .desktop-icons { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+        .shortcut { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90px; height: 90px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; text-align: center; color: #00f0ff; font-size: 12px; font-weight: 600; text-shadow: 0 0 8px rgba(0, 240, 255, 0.6); transition: all 0.2s; }
+        .shortcut:hover { background: rgba(0, 240, 255, 0.1); border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); color: #fff; }
+        .shortcut img { width: 44px; height: 44px; margin-bottom: 8px; filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.5)); }
+
+        .window { position: absolute; top: 12%; left: 15%; width: 75%; height: 72%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px); border-radius: 12px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.15); display: none; flex-direction: column; overflow: hidden; border: 2px solid #38bdf8; min-width: 450px; min-height: 350px; z-index: 10; transition: box-shadow 0.3s; }
+        .window.focused { box-shadow: 0 0 35px rgba(0, 240, 255, 0.4); border-color: #00f0ff; }
+        .window-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 16px; cursor: move; border-bottom: 1px solid rgba(0, 240, 255, 0.3); }
+        .window-title { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #00f0ff; font-weight: bold; text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
+        .window-title img { width: 18px; height: 18px; }
+        .window-controls { display: flex; gap: 8px; }
+        .win-btn { width: 28px; height: 24px; background: transparent; border: none; color: #fff; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.2s; }
+        .win-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .win-btn.close:hover { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .window-body { flex-grow: 1; background: #020617; width: 100%; height: 100%; position: relative; }
+        .window-body iframe { width: 100%; height: 100%; border: none; }
+
+        .taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: 52px; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(20px); border-top: 2px solid #00f0ff; display: flex; justify-content: center; align-items: center; z-index: 9999; box-shadow: 0 -5px 20px rgba(0, 240, 255, 0.2); }
+        .taskbar-center { display: flex; align-items: center; gap: 12px; }
+        .taskbar-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .taskbar-icon:hover { background: rgba(0, 240, 255, 0.15); border-color: #00f0ff; box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); transform: translateY(-2px); }
+        .taskbar-icon.active { background: rgba(0, 240, 255, 0.2); border-color: #00f0ff; box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+        .taskbar-icon img { width: 28px; height: 28px; }
+
+        .taskbar-right { position: absolute; right: 16px; display: flex; align-items: center; gap: 15px; color: #00f0ff; font-size: 12px; padding: 5px 12px; height: 75%; border-radius: 6px; border: 1px solid rgba(0, 240, 255, 0.2); text-shadow: 0 0 5px rgba(0, 240, 255, 0.5); }
+        .taskbar-right:hover { background: rgba(0, 240, 255, 0.1); border-color: #00f0ff; }
+        .system-time { text-align: right; line-height: 1.3; font-weight: 600; }
+
+        .start-menu { position: fixed; bottom: -650px; left: 50%; transform: translateX(-50%); width: 520px; height: 520px; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(25px); border: 2px solid #00f0ff; border-radius: 16px; box-shadow: 0 0 35px rgba(0, 240, 255, 0.3); transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); z-index: 9998; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .start-menu.open { bottom: 68px; }
+        .start-search { width: 100%; padding: 12px 20px; border-radius: 25px; background: rgba(0, 0, 0, 0.6); border: 1px solid #00f0ff; color: #fff; font-size: 14px; outline: none; box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.2); }
+        .start-search:focus { border-color: #38bdf8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.5); }
+        .apps-section-title { font-size: 13px; color: #38bdf8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px rgba(56, 189, 248, 0.4); }
+        .apps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 5px; }
+        .app-item { display: flex; flex-direction: column; align-items: center; gap: 10px; color: #00f0ff; font-size: 12px; font-weight: 500; cursor: pointer; padding: 12px; border-radius: 8px; border: 1px solid transparent; transition: all 0.2s; }
+        .app-item:hover { background: rgba(0, 240, 255, 0.1); border-color: #00f0ff; color: #fff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
+        .app-item img { width: 38px; height: 38px; filter: drop-shadow(0 0 4px rgba(0,240,255,0.4)); }
     </style>
 </head>
 <body>
 
-<div class="browser-container">
-   
-    <div class="toolbar">
-        <div class="nav-buttons">
-            <button class="btn" id="back-btn" title="Retour (Historique simulé)">◀</button>
-            <button class="btn" id="forward-btn" title="Suivant (Historique simulé)">▶</button>
-            <button class="btn" id="reload-btn" title="Actualiser">↻</button>
-            <button class="btn" id="home-btn" title="Page d'accueil">🏠</button>
-        </div>
-        
-        <div class="address-bar-wrapper">
-            <input type="text" id="address-input" class="address-input" placeholder="Rechercher sur Google ou saisir une URL...">
+    <div class="desktop" id="desktop">
+        <div class="desktop-icons">
+            <div class="shortcut" onclick="openApp('chrome-window')">
+                <img src="https://wikimedia.org" alt="ChromeCloneX">
+                <span>ChromeCloneX</span>
+            </div>
         </div>
 
-        <div class="proxy-toggle">
-            <input type="checkbox" id="use-proxy">
-            <label for="use-proxy" title="Utilise un proxy public pour contourner les restrictions CORS/X-Frame-Options de certains sites.">Activer Proxy</label>
+        <div id="chrome-window" class="window" onclick="focusWindow('chrome-window')">
+            <div class="window-header" onmousedown="dragStart(event, 'chrome-window')">
+                <div class="window-title">
+                    <img src="https://wikimedia.org" alt="Chrome">
+                    <span>ChromeCloneX Browser Engine</span>
+                </div>
+                <div class="window-controls">
+                    <button class="win-btn" onclick="minimizeApp('chrome-window')">─</button>
+                    <button class="win-btn" onclick="maximizeApp('chrome-window')">🗖</button>
+                    <button class="win-btn close" onclick="closeApp('chrome-window')">✕</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <iframe src="browser.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="start-menu" id="start-menu">
+        <input type="text" class="start-search" placeholder="Search apps, files, settings...">
+        <div class="apps-section-title">Pinned Applications</div>
+        <div class="apps-grid">
+            <div class="app-item" onclick="toggleStartMenu(); openApp('chrome-window');">
+                <img src="https://wikimedia.org">
+                <span>ChromeCloneX</span>
+            </div>
         </div>
     </div>
 
-    <div class="viewport-container">
-        <iframe id="browser-viewport" src="about:blank"></iframe>
-        
-        <div class="status-bar">
-            <span>🚀 <strong>ChromeCloneX</strong> | Propulsé par GitHub Pages</span>
-            <span id="current-status">Statut : Prêt</span>
+    <div class="taskbar">
+        <div class="taskbar-center">
+            <div class="taskbar-icon" onclick="toggleStartMenu()" id="start-btn">
+                <img src="https://wikimedia.org" alt="Start Menu Launcher">
+            </div>
+            <div class="taskbar-icon" onclick="openApp('chrome-window')" id="chrome-taskbar-icon">
+                <img src="https://wikimedia.org" alt="Chrome Quick-Launch">
+            </div>
+        </div>
+
+        <div class="taskbar-right">
+            <div class="system-time">
+                <div id="time-clock">00:00 AM</div>
+                <div id="date-clock">10/31/2026</div>
+            </div>
         </div>
     </div>
-</div>
 
-
-<script src="browser.js"></script>
+    <script src="os.js"></script>
 </body>
 </html>
 
