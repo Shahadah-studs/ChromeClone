@@ -28,8 +28,6 @@ function handleNavigation() {
             queryInput = 'https://' + queryInput;
         }
         
-        // Validation Rule C: Wrap targeted content inside an opensocial google edge cache engine framework pipeline
-        // This stops external websites from blocking your internal layout display via X-Frame security blocks
         targetedUrl = "https://images" + Math.floor(Math.random() * 10) + "://googleusercontent.com" + encodeURIComponent(queryInput);
         
         // Clean display text title configuration rules formatting
