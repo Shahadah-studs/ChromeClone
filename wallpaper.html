@@ -23,8 +23,8 @@
     <img class="thumb" src="img/32.png" onclick="setWp(this.src)">
 </div>
 <div class="input-box">
-    <input type="text" id="wp-url" placeholder="Paste custom image URL...">
-    <button onclick="setCustom()">Apply</button>
+    <input type="text" id="wp-url" placeholder="Paste custom image link...">
+    <button onclick="setCustom()">Inject</button>
 </div>
 <script>
     function setWp(url) { window.parent.postMessage({type: 'SET_WALLPAPER', url: url}, '*'); }
