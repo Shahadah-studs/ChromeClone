@@ -1,60 +1,112 @@
-// Global Component DOM Element Nodes Setup
-const iframe = document.getElementById('browser-frame');
-const urlInput = document.getElementById('url-input');
-const tabTitle = document.getElementById('tab-title');
-const goButton = document.getElementById('go-btn');
-const homeButton = document.getElementById('home-btn');
-const reloadButton = document.getElementById('reload-btn');
+// ChromeCloneX
+const iframe = document.getElementById('browser-viewport');
+const addressInput = document.getElementById('address-input');
+const backBtn = document.getElementById('back-btn');
+const forwardBtn = document.getElementById('forward-btn');
+const reloadBtn = document.getElementById('reload-btn');
+const homeBtn = document.getElementById('home-btn');
+const useProxyCheck = document.getElementById('use-proxy');
+const currentStatus = document.getElementById('current-status');
 
-// Initial Core Configurations
-const DEFAULT_HOME_PAGE = "https://wikipedia.org";
 
-/**
- * Executes safe navigation routing when a request is made
- */
-function handleNavigation() {
-    let queryInput = urlInput.value.trim();
-    if (!queryInput) return;
+const HOME_PAGE = 'https://google.com'; 
 
-    let targetedUrl = "";
 
-    // Validation Rule A: If input string doesn't look like a standard domain dot format, query it on Google
-    if (!queryInput.includes('.') || queryInput.includes(' ')) {
-        targetedUrl = "https://google.com" + encodeURIComponent(queryInput);
-        tabTitle.innerText = "Google Search Result";
-    } else {
-        // Validation Rule B: Enforce explicit TLS secure transport protocols if forgotten
-        if (!queryInput.startsWith('http://') && !queryInput.startsWith('https://')) {
-            queryInput = 'https://' + queryInput;
-        }
-        
-        targetedUrl = "https://images" + Math.floor(Math.random() * 10) + "://googleusercontent.com" + encodeURIComponent(queryInput);
-        
-        // Clean display text title configuration rules formatting
-        tabTitle.innerText = queryInput.replace('https://', '').replace('http://', '').replace('www.', '');
-    }
+const PROXY_PREFIX = 'https://allorigins.win';
 
-    // Set updated sandbox location target link
-    iframe.src = targetedUrl;
+let historyStack = [];
+let historyIndex = -1;
+
+function updateNavButtons() {
+    backBtn.disabled = historyIndex <= 0;
+    backBtn.style.opacity = backBtn.disabled ? "0.4" : "1";
+    
+    forwardBtn.disabled = historyIndex >= historyStack.length - 1;
+    forwardBtn.style.opacity = forwardBtn.disabled ? "0.4" : "1";
 }
 
-// Action Listener Registrations
-goButton.addEventListener('click', handleNavigation);
+function navigateTo(target, addToHistory = true) {
+    let url = target.trim();
+    if (!url) return;
 
-urlInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        handleNavigation();
+    // Détection s'il s'agit d'une URL valide ou d'une recherche textuelle
+    const isUrl = url.includes('.') && !url.includes(' ');
+    
+    if (!isUrl) {
+        url = `https://google.com{encodeURIComponent(url)}&igu=1`; 
+    } else {
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+        // Force le paramètre anti-X-Frame si l'utilisateur saisit l'adresse Google racine
+        if (url.includes('google.com') && !url.includes('igu=1')) {
+            url = url.includes('?') ? `${url}&igu=1` : `${url}?igu=1`;
+        }
+    }
+
+    if (addToHistory) {
+        // Si on navigue après un retour en arrière, on efface la branche supérieure future
+        if (historyIndex < historyStack.length - 1) {
+            historyStack = historyStack.slice(0, historyIndex + 1);
+        }
+        historyStack.push(url);
+        historyIndex = historyStack.length - 1;
+    }
+
+    let finalUrl = url;
+    if (useProxyCheck.checked && !url.includes('google.com')) {
+        finalUrl = PROXY_PREFIX + encodeURIComponent(url);
+        currentStatus.innerText = "Statut : Routage Proxy actif...";
+    } else {
+        currentStatus.innerText = "Statut : Connexion directe...";
+    }
+
+    addressInput.value = url;
+    iframe.src = finalUrl;
+    updateNavButtons();
+}
+addressInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        navigateTo(addressInput.value);
     }
 });
 
-homeButton.addEventListener('click', () => {
-    urlInput.value = "";
-    iframe.src = DEFAULT_HOME_PAGE;
-    tabTitle.innerText = "Wikipedia";
+addressInput.addEventListener('focus', () => {
+    addressInput.select();
 });
 
-reloadButton.addEventListener('click', () => {
-    const currentFrameSource = iframe.src;
-    iframe.src = ''; // Temporary clear step to force frame element redraw
-    iframe.src = currentFrameSource;
+
+backBtn.addEventListener('click', () => {
+    if (historyIndex > 0) {
+        historyIndex--;
+        navigateTo(historyStack[historyIndex], false);
+    }
 });
+
+
+forwardBtn.addEventListener('click', () => {
+    if (historyIndex < historyStack.length - 1) {
+        historyIndex++;
+        navigateTo(historyStack[historyIndex], false);
+    }
+});
+
+
+reloadBtn.addEventListener('click', () => {
+    iframe.src = iframe.src;
+    currentStatus.innerText = "Statut : Actualisation...";
+});
+
+
+homeBtn.addEventListener('click', () => {
+    navigateTo(HOME_PAGE);
+});
+
+// XD
+iframe.addEventListener('load', () => {
+    currentStatus.innerText = "Statut : Page chargée avec succès";
+});
+
+
+navigateTo(HOME_PAGE);
+
