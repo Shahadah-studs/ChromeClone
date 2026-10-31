@@ -3,146 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChromeClone - Web sandbox</title>
+    <title>ChromeCloneX - Web Browser Simulator</title>
     <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #202124;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #202124; color: #fff; overflow: hidden; }
+        .browser-container { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        
+       
+        .toolbar { display: flex; align-items: center; background: #2f3033; padding: 8px; gap: 10px; border-bottom: 1px solid #3c4043; }
+        .nav-buttons { display: flex; gap: 5px; }
+        .btn { background: transparent; border: none; color: #fff; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
+        .btn:hover { background: rgba(255,255,255,0.1); }
+        .btn:disabled { color: #5f6368; cursor: not-allowed; }
+       
+        .address-bar-wrapper { flex-grow: 1; display: flex; align-items: center; background: #202124; border-radius: 20px; padding: 5px 15px; border: 1px solid #5f6368; }
+        .address-bar-wrapper:focus-within { border-color: #8ab4f8; box-shadow: 0 0 0 1px #8ab4f8; }
+        .address-input { width: 100%; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; }
+        
+        
+        .proxy-toggle { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #bdc1c6; white-space: nowrap; user-select: none; }
+        .proxy-toggle input { cursor: pointer; }
 
-        /* Top Window Tab System Bar */
-        .tab-bar {
-            background-color: #202124;
-            display: flex;
-            padding: 8px 10px 0 10px;
-            gap: 5px;
-        }
-
-        .tab {
-            background-color: #35363a;
-            color: #9aa0a6;
-            padding: 8px 22px;
-            border-radius: 8px 8px 0 0;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border: none;
-            display: flex;
-            align-items: center;
-            max-width: 180px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tab.active {
-            background-color: #35363a;
-            color: white;
-            font-weight: 500;
-        }
-
-        /* Chrome Navigation Action Control Header */
-        .browser-toolbar {
-            background-color: #35363a;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #3c4043;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #e8eaed;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-        }
-        .nav-btn:hover { background-color: rgba(255,255,255,0.1); }
-
-        /* Unified Smart Search / URL Input Box */
-        .address-bar {
-            flex-grow: 1;
-            background-color: #202124;
-            border: 1px solid #3c4043;
-            border-radius: 20px;
-            padding: 8px 20px;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-        .address-bar:focus { 
-            border-color: #8ab4f8; 
-            background-color: #282a2d;
-        }
-
-        /* Interactive Viewport Frame Area */
-        .web-view-container {
-            flex-grow: 1;
-            background: white;
-            position: relative;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background-color: white;
-        }
-
-        .info-badge {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.85);
-            color: #8ab4f8;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            pointer-events: none;
-            letter-spacing: 0.5px;
-            font-family: monospace;
-            border: 1px solid #3c4043;
-        }
+        .viewport-container { flex-grow: 1; position: relative; background: #fff; }
+        iframe { width: 100%; height: 100%; border: none; background: #fff; }
+        
+       
+        .status-bar { position: absolute; bottom: 0; left: 0; right: 0; background: #f1f3f4; color: #3c4043; padding: 6px 15px; font-size: 12px; display: flex; justify-content: space-between; border-top: 1px solid #dadce0; z-index: 10; pointer-events: none; }
+        .status-bar * { pointer-events: auto; }
     </style>
 </head>
 <body>
 
-    <!-- Tab Section Header Component -->
-    <div class="tab-bar">
-        <button class="tab active" id="tab-title">Wikipedia</button>
+<div class="browser-container">
+   
+    <div class="toolbar">
+        <div class="nav-buttons">
+            <button class="btn" id="back-btn" title="Retour (Historique simulé)">◀</button>
+            <button class="btn" id="forward-btn" title="Suivant (Historique simulé)">▶</button>
+            <button class="btn" id="reload-btn" title="Actualiser">↻</button>
+            <button class="btn" id="home-btn" title="Page d'accueil">🏠</button>
+        </div>
+        
+        <div class="address-bar-wrapper">
+            <input type="text" id="address-input" class="address-input" placeholder="Rechercher sur Google ou saisir une URL...">
+        </div>
+
+        <div class="proxy-toggle">
+            <input type="checkbox" id="use-proxy">
+            <label for="use-proxy" title="Utilise un proxy public pour contourner les restrictions CORS/X-Frame-Options de certains sites.">Activer Proxy</label>
+        </div>
     </div>
 
-    <!-- Active Address Bar Navigation Block -->
-    <div class="browser-toolbar">
-        <button class="nav-btn" id="home-btn" title="Home">🏠</button>
-        <button class="nav-btn" id="reload-btn" title="Reload">↻</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL website link...">
-        <button class="nav-btn" id="go-btn" title="Navigate">⇾</button>
+    <div class="viewport-container">
+        <iframe id="browser-viewport" src="about:blank"></iframe>
+        
+        <div class="status-bar">
+            <span>🚀 <strong>ChromeCloneX</strong> | Propulsé par GitHub Pages</span>
+            <span id="current-status">Statut : Prêt</span>
+        </div>
     </div>
+</div>
 
-    <!-- Sandbox Framing Viewport Content Area -->
-    <div class="web-view-container">
-        <iframe id="browser-frame" src="https://wikipedia.org"></iframe>
-        <div class="info-badge">Engine: 0.1 Beta</div>
-    </div>
 
-    
-    <script src="browser.js"></script>
+<script src="browser.js"></script>
 </body>
 </html>
+
 
