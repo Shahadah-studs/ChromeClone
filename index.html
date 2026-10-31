@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikipedia Sandbox Browser</title>
+    <title>Web Sandbox - Chrome Concept Clone</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -17,7 +17,7 @@
             overflow: hidden;
         }
 
-        /* Top Chrome Tab Style Header */
+        /* Top Window Tab System Bar */
         .tab-bar {
             background-color: #202124;
             display: flex;
@@ -33,6 +33,8 @@
             font-size: 0.8rem;
             cursor: pointer;
             border: none;
+            display: flex;
+            align-items: center;
             max-width: 180px;
             white-space: nowrap;
             overflow: hidden;
@@ -45,7 +47,7 @@
             font-weight: 500;
         }
 
-        /* Control Toolbar */
+        /* Chrome Navigation Action Control Header */
         .browser-toolbar {
             background-color: #35363a;
             padding: 8px 12px;
@@ -67,9 +69,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.2s;
         }
         .nav-btn:hover { background-color: rgba(255,255,255,0.1); }
 
+        /* Unified Smart Search / URL Input Box */
         .address-bar {
             flex-grow: 1;
             background-color: #202124;
@@ -79,69 +83,29 @@
             color: white;
             font-size: 0.9rem;
             outline: none;
+            transition: border-color 0.2s, background-color 0.2s;
         }
-        .address-bar:focus { border-color: #8ab4f8; }
+        .address-bar:focus { 
+            border-color: #8ab4f8; 
+            background-color: #282a2d;
+        }
 
-        /* Output Viewport Area */
+        /* Interactive Viewport Frame Area */
         .web-view-container {
             flex-grow: 1;
-            background: #ffffff;
+            background: white;
             position: relative;
         }
 
-        iframe, .search-output-view {
+        iframe {
             width: 100%;
             height: 100%;
             border: none;
             background-color: white;
+        }
+
+        .info-badge {
             position: absolute;
-            top: 0;
-            left: 0;
-            display: none;
-        }
-
-        .search-output-view {
-            display: block; /* Search view is default home active view */
-            overflow-y: auto;
-            padding: 30px;
-        }
-
-        .welcome-screen {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-            color: #333;
-        }
-
-        .search-card {
-            background: #ffffff;
-            border: 1px solid #dadce0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            max-width: 800px;
-        }
-        .search-card h3 { margin: 0 0 8px 0; }
-        .search-card h3 button {
-            background: none;
-            border: none;
-            color: #1a0dab;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0;
-            text-align: left;
-        }
-        .search-card h3 button:hover { text-decoration: underline; }
-        .search-card p {
-            color: #4d5156;
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        .status-badge {
-            position: fixed;
             bottom: 12px;
             right: 12px;
             background: rgba(0,0,0,0.85);
@@ -149,45 +113,36 @@
             padding: 6px 12px;
             border-radius: 6px;
             font-size: 0.75rem;
+            pointer-events: none;
+            letter-spacing: 0.5px;
             font-family: monospace;
-            z-index: 999;
+            border: 1px solid #3c4043;
         }
     </style>
 </head>
 <body>
 
+    <!-- Tab Section Header Component -->
     <div class="tab-bar">
-        <button class="tab active" id="tab-title">Wikipedia Portal</button>
+        <button class="tab active" id="tab-title">Wikipedia</button>
     </div>
 
+    <!-- Active Address Bar Navigation Block -->
     <div class="browser-toolbar">
-        <button class="nav-btn" id="home-btn">🏠</button>
-        <input type="text" id="url-input" class="address-bar" placeholder="Search Wikipedia (e.g. Chrome, Quran, Space, Gaming)...">
-        <button class="nav-btn" id="go-btn">➜</button>
+        <button class="nav-btn" id="home-btn" title="Home">🏠</button>
+        <button class="nav-btn" id="reload-btn" title="Reload">🔄</button>
+        <input type="text" id="url-input" class="address-bar" placeholder="Type a URL website link or ask Google a question...">
+        <button class="nav-btn" id="go-btn" title="Navigate">➜</button>
     </div>
 
+    <!-- Sandbox Framing Viewport Content Area -->
     <div class="web-view-container">
-        <!-- Layer A: Search Engine Layout Panel -->
-        <div id="search-view" class="search-output-view">
-            <div id="render-output">
-                <div class="welcome-screen">
-                    <h2>Custom Wikipedia Sandbox Browser</h2>
-                    <p>Type any keyword or topic in the address bar above. Results and entire articles will load right here inside this app screen without errors.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Layer B: Safe Embedded Frame Engine for reading articles -->
-        <iframe id="browser-frame"></iframe>
-
-        <div class="status-badge" id="engine-status">Status: Ready</div>
+        <iframe id="browser-frame" src="https://wikipedia.org"></iframe>
+        <div class="info-badge">Engine: Sandbox_v1.0</div>
     </div>
 
+    <!-- Linking your custom decoupled engineering script sheet -->
     <script src="browser.js"></script>
 </body>
 </html>
-
-
-
-
 
