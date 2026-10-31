@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Error - ShahadahOS - 404</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body, html { width: 100vw; height: 100vh; font-family: 'Segoe UI', Roboto, sans-serif; background: #020617; color: #00f0ff; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        
+        .error-container { max-width: 650px; padding: 30px; text-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+        .sad-face { font-size: 120px; font-weight: 300; margin-bottom: 20px; color: #38bdf8; }
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        p { font-size: 16px; line-height: 1.6; margin-bottom: 25px; color: #cbd5e1; }
+        
+        .details { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid #38bdf8; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 13px; color: #38bdf8; margin-bottom: 30px; box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); }
+        .details div { margin-bottom: 6px; }
+        .details span { color: #fff; }
+        
+        .redirect-text { font-size: 14px; color: #00f0ff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top-color: #00f0ff; border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <div class="sad-face">:(</div>
+        <h1>SHAHADAHOS_PAGE_NOT_FOUND</h1>
+        <p>The system component or web address you are trying to reach does not exist or has been moved to another quadrant. ShahadahOS needs to restart its core desktop shell to recover.</p>
+        
+        <div class="details">
+            <div>Stop Code: <span>ERROR_404</span></div>
+            <div>Subsystem: <span>Static_Routing_Engine</span></div>
+            <div>Failing Link: <span id="bad-link">unknown</span></div>
+        </div>
+
+        <div class="redirect-text">
+            <div class="spinner"></div>
+            <span>Rebooting to desktop in <span id="countdown">7</span> seconds...</span>
+        </div>
+    </div>
+
+<script>
+    document.getElementById('bad-link').innerText = window.location.href;
+    let count = 7;
+    const counter = setInterval(() => {
+        count--;
+        document.getElementById('countdown').innerText = count;
+        if (count <= 0) {
+            clearInterval(counter);
+            window.location.href = window.location.origin + window.location.pathname.split('/').slice(0, 2).join('/');
+        }
+    }, 1000);
+</script>
+</body>
+</html>
