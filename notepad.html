@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body, html { width: 100%; height: 100%; margin: 0; background: #020617; color: #fff; font-family: monospace; overflow: hidden; }
+        .notepad-container { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        .menu-bar { background: #0f172a; padding: 6px 12px; display: flex; gap: 15px; border-bottom: 1px solid rgba(0, 240, 255, 0.2); }
+        .menu-btn { background: transparent; border: none; color: #38bdf8; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .menu-btn:hover { color: #00f0ff; }
+        textarea { flex-grow: 1; width: 100%; background: #020617; border: none; color: #cbd5e1; padding: 12px; font-size: 14px; outline: none; resize: none; }
+    </style>
+</head>
+<body>
+<div class="notepad-container">
+    <div class="menu-bar">
+        <button class="menu-btn" id="save-btn">Save to OS</button>
+        <button class="menu-btn" id="clear-btn">Clear Workspace</button>
+    </div>
+    <textarea id="note-text" placeholder="Start typing details here..."></textarea>
+</div>
+<script>
+    const txt = document.getElementById('note-text');
+    txt.value = localStorage.getItem('shahadah_note') || '';
+    document.getElementById('save-btn').addEventListener('click', () => {
+        localStorage.setItem('shahadah_note', txt.value);
+        alert('Saved successfully!');
+    });
+    document.getElementById('clear-btn').addEventListener('click', () => {
+        txt.value = '';
+        localStorage.removeItem('shahadah_note');
+    });
+</script>
+</body>
+</html>
